@@ -4,12 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Page title -->
     <title>Students</title>
     <style>
         table {
             border-collapse: collapse;
         }
-        
+
         th,
         td {
             border: 1px solid #ddd;
@@ -26,49 +27,62 @@
             text-align: center;
         }
 
+        /* Alternating row colours */
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
 
+        /* Adjust the width of the first column (Student ID) */
         th:nth-child(1),
         td:nth-child(1) {
             width: 80px;
         }
 
+        /* Adjust the width of the second column (Name) */
         th:nth-child(2),
         td:nth-child(2) {
             width: 130px;
         }
 
+        /* Adjust the width and alignment of the third column (Age) */
         th:nth-child(3),
         td:nth-child(3) {
             width: 30px;
             text-align: center;
         }
 
+        /* Adjust the width and alignment of the fourth column (Action) */
         th:nth-child(4),
         td:nth-child(4) {
             width: 60px;
             text-align: center;
         }
-        .delete-button {
-        color: white;
-        background-color: darkred;
-        padding: 5px 10px;
-        text-decoration: none;
-        border-radius: 3px;
-    }
 
-    .delete-button:hover {
-        background-color: red;
-    }
+        /* Styles for the delete button */
+        .delete-button {
+            color: white;
+            background-color: darkred;
+            padding: 5px 10px;
+            text-decoration: none;
+            border-radius: 3px;
+        }
+
+        /* Hover effect for the delete button */
+        .delete-button:hover {
+            background-color: red;
+        }
     </style>
 </head>
 
 <body>
+    <!-- Page heading -->
     <h1>Students</h1>
+    <!-- Link to the home page -->
     <p><a href="/">Home</a></p>
+    <!-- Link to add a new student -->
     <p><a href="/students/add">Add Student</a></p>
+
+    <!-- Table displaying student details -->
     <table>
         <thead>
             <tr>

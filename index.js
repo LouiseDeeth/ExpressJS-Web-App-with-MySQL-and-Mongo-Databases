@@ -46,11 +46,14 @@ app.get('/students/edit/:sid', (req, res) => {
         });
 });
 
+// Route to delete a student and associated grades
 app.get('/students/delete/:sid', (req, res) => {
     const sid = req.params.sid;
 
+    // First, delete all grades associated with the student
     mySqlDao.deleteGradesByStudentId(sid)
         .then(() => {
+            // Then, delete the student
             return mySqlDao.deleteStudent(sid);
         })
         .then(() => {
@@ -61,7 +64,9 @@ app.get('/students/delete/:sid', (req, res) => {
         });
 });
 
+// Route to display the list of grades
 app.get('/grades', (req, res) => {
+    // Get grades data from the MySQL database
     mySqlDao.getGrades()
         .then((data) => {
             // Sort the data alphabetically by student name, then by grade (ascending)
@@ -77,7 +82,9 @@ app.get('/grades', (req, res) => {
         });
 });
 
+// Route to display the list of lecturers
 app.get('/lecturers', (req, res) => {
+    // Get all lecturers from the MongoDB database
     mongoDao.getAllLecturers()
         .then((data) => {
             data.sort((a, b) => a.lecturerId.localeCompare(b.lecturerId)); // Sort alphabetically by Lecturer ID
@@ -88,6 +95,7 @@ app.get('/lecturers', (req, res) => {
         });
 });
 
+// Route to delete a lecturer if not associated with any modules
 app.get('/lecturers/delete/:id', (req, res) => {
     const lecturerId = req.params.id;
 
@@ -101,7 +109,7 @@ app.get('/lecturers/delete/:id', (req, res) => {
                     errorMessage: `Cannot delete lecturer ${lecturerId}. He/She has associated modules.`
                 });
             } else {
-                // If lmecturer has no associated modules, proceed with deletion
+                // If lecturer has no associated modules, proceed with deletion
                 mongoDao.deleteLecturerById(lecturerId)
                     .then(() => {
                         res.redirect('/lecturers'); // Redirect back to the lecturers page
@@ -121,10 +129,12 @@ app.get('/lecturers/add', (req, res) => {
     res.render('addLecturer', { errors: [], lecturer: {} });
 });
 
+// Render the form to add a student
 app.get('/students/add', (req, res) => {
     res.render('addStudent', { errors: [], student: {} });
 });
 
+// Route to handle editing student details
 app.post('/students/edit/:sid', (req, res) => {
     const sid = req.params.sid;
     const { name, age } = req.body;
@@ -152,6 +162,7 @@ app.post('/students/edit/:sid', (req, res) => {
     }
 });
 
+// Route to handle adding a new student
 app.post('/students/add', (req, res) => {
     const { sid, name, age } = req.body;
 
@@ -169,6 +180,7 @@ app.post('/students/add', (req, res) => {
     if (errors.length > 0) {
         res.render('addStudent', { errors, student: { sid, name, age } });
     } else {
+        // Check if the student ID already exists in the database
         mySqlDao.getStudentById(sid)
             .then((existingStudent) => {
                 if (existingStudent) {
@@ -193,7 +205,7 @@ app.post('/students/add', (req, res) => {
     }
 });
 
-
+// Route to handle adding a new lecturer
 app.post('/lecturers/add', (req, res) => {
     const { lecturerId, name, departmentId } = req.body;
 
@@ -207,7 +219,7 @@ app.post('/lecturers/add', (req, res) => {
     if (!departmentId || departmentId.length !== 3) {
         errors.push('Department ID should be 3 characters');
     }
-
+    // If validation errors exist, re-render the form with errors and entered data
     if (errors.length > 0) {
         res.render('addLecturer', { errors, lecturer: { lecturerId, name, departmentId } });
     } else {
@@ -216,6 +228,7 @@ app.post('/lecturers/add', (req, res) => {
             .then((lecturers) => {
                 const existingLecturer = lecturers.find(lecturer => lecturer.lecturerId === lecturerId);
                 if (existingLecturer) {
+                    // If lecturer ID exists, show an error
                     errors.push(`Lecturer ID ${lecturerId} already exists`);
                     res.render('addLecturer', { errors, lecturer: { lecturerId, name, departmentId } });
                 } else {

@@ -4,12 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grades</title>
+    <!-- Page title -->
+     <title>Grades</title>
     <style>
+        /* General styling for the table */
         table {
             border-collapse: collapse;
         }
 
+        /* Styling for table cells and headers */
         th,
         td {
             border: 1px solid #ddd;
@@ -17,31 +20,45 @@
             padding: 8px;
         }
 
+        /* Styling for header cells */
         th {
             background-color: #f2f2f2;
             text-align: center;
         }
 
+        /* Alternating row colours */
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
-        th:nth-child(1), td:nth-child(1) {
-            width: 150px; 
+
+        /* Adjust the width of the first column (Student) */
+        th:nth-child(1),
+        td:nth-child(1) {
+            width: 150px;
         }
-        th:nth-child(2), td:nth-child(2) {
+
+        /* Adjust the width of the second column (Module) */
+        th:nth-child(2),
+        td:nth-child(2) {
             width: 250px;
         }
-        th:nth-child(3), td:nth-child(3) {
-            width: 30px; 
+
+        /* Adjust the width and alignment of the third column (Grade) */
+        th:nth-child(3),
+        td:nth-child(3) {
+            width: 30px;
             text-align: center;
         }
-
     </style>
 </head>
-<body>
-    <p><a href="/">Home</a></p>
-    <h1>Grades</h1>
 
+<body>
+    <!-- Page title -->
+    <h1>Grades</h1>
+    <!-- Link to navigate back to the home page -->
+    <p><a href="/">Home</a></p>
+
+    <!-- Table to display grades -->
     <table>
         <thead>
             <tr>
@@ -51,11 +68,11 @@
             </tr>
         </thead>
         <tbody>
-            <% grades.forEach(grade => { %>
+            <% grades.forEach(grade=> { %>
                 <tr>
                     <td><%= grade.student_name %></td>
                     <td><%= grade.module_name || '' %></td>
-                    <td><%= grade.grade !== null ? grade.grade : '' %></td>
+                    <td><%= grade.grade !==null ? grade.grade : '' %></td>
                 </tr>
             <% }) %>
         </tbody>

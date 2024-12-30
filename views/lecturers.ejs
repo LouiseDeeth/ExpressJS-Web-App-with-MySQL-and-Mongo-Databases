@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Page title -->
     <title>Lecturers</title>
     <style>
         table {
@@ -22,26 +23,31 @@
             text-align: center;
         }
 
+        /* Alternating row colours */
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
 
+        /* Adjust the width of the first column (Lecturer ID) */
         th:nth-child(1),
         td:nth-child(1) {
             width: 90px;
         }
 
+        /* Adjust the width of the second column (Name) */
         th:nth-child(2),
         td:nth-child(2) {
             width: 150px;
         }
 
+        /* Adjust the width and alignment of the third column (Department ID) */
         th:nth-child(3),
         td:nth-child(3) {
             width: 120px;
             text-align: center;
         }
 
+        /* Adjust the width and alignment of the fourth column (Action) */
         th:nth-child(4),
         td:nth-child(4) {
             width: 60px;
@@ -51,9 +57,14 @@
 </head>
 
 <body>
+    <!-- Page heading -->
     <h1>Lecturers</h1>
+    <!-- Link to the home page -->
     <p><a href="/">Home</a></p>
+    <!-- Link to add a new lecturer -->
     <p><a href="/lecturers/add">Add Lecturer</a></p>
+
+    <!-- Table displaying lecturers -->
     <table>
         <thead>
             <tr>

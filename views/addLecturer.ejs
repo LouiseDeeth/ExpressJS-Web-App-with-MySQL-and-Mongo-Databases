@@ -4,8 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Lecturer</title>
+    <!-- Page title -->
+     <title>Add Lecturer</title>
     <style>
+        /* General styles for the page */
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
@@ -15,6 +17,7 @@
             text-align: left;
         }
 
+        /* Styling for the form container */
         form {
             max-width: 400px;
             padding: 20px;
@@ -23,12 +26,14 @@
             background-color: #f9f9f9;
         }
 
+        /* Styling for form labels */
         form label {
             display: block;
             margin-bottom: 8px;
             font-weight: bold;
         }
 
+        /* Styling for input fields */
         form input[type="text"],
         form input[type="number"] {
             width: 100%;
@@ -39,6 +44,7 @@
             box-sizing: border-box;
         }
 
+        /* Styling for the submit button */
         form button {
             display: block;
             width: 60px;
@@ -51,10 +57,12 @@
             cursor: pointer;
         }
 
+        /* Hover effect for the submit button */
         form button:hover {
             background-color: #0056b3;
         }
 
+        /* Styling for error messages */
         .errors {
             color: red;
             margin-bottom: 16px;
@@ -63,9 +71,12 @@
 </head>
 
 <body>
+    <!-- Link to return to the home page -->
     <p><a href="/">Home</a></p>
+    <!-- Page title -->
     <h1>Add Lecturer</h1>
 
+    <!-- Display validation errors if any -->
     <% if (errors.length> 0) { %>
         <div class="errors">
             <ul>
@@ -73,19 +84,20 @@
                     <li>
                         <%= error %>
                     </li>
-                    <% }); %>
+                <% }); %>
             </ul>
         </div>
-        <% } %>
+    <% } %>
 
-            <form action="/lecturers/add" method="POST">
-                <label>Lecturer ID</label>
-                <input type="text" name="lecturerId" value="<%= lecturer.lecturerId || '' %>">
-                <label>Name</label>
-                <input type="text" name="name" value="<%= lecturer.name || ''%>">
-                <label>Department ID</label>
-                <input type="text" name="departmentId" value="<%= lecturer.departmentId || ''%>">
-                <button type="submit">Add</button>
-            </form>
+    <!-- Form for adding a lecturer -->
+    <form action="/lecturers/add" method="POST">
+        <label>Lecturer ID</label>
+        <input type="text" name="lecturerId" value="<%= lecturer.lecturerId || '' %>">
+        <label>Name</label>
+        <input type="text" name="name" value="<%= lecturer.name || ''%>">
+        <label>Department ID</label>
+        <input type="text" name="departmentId" value="<%= lecturer.departmentId || ''%>">
+        <button type="submit">Add</button>
+    </form>
 </body>
 </html>

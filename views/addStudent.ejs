@@ -1,19 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Student</title>
+    <!-- Page title -->
+     <title>Add Student</title>
     <style>
+        /* General styles for the page */
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
         }
 
+        /* Styling for the page heading */
         h1 {
             text-align: left;
         }
 
+        /* Styling for the form container */
         form {
             max-width: 400px;
             padding: 20px;
@@ -22,22 +27,25 @@
             background-color: #f9f9f9;
         }
 
+        /* Styling for form labels */
         form label {
             display: block;
             margin-bottom: 8px;
             font-weight: bold;
         }
 
+        /* Styling for input fields */
         form input[type="text"],
         form input[type="number"] {
-            width: 100%; 
+            width: 100%;
             padding: 8px;
-            margin-bottom: 16px; 
+            margin-bottom: 16px;
             border: 1px solid #ccc;
             border-radius: 4px;
             box-sizing: border-box;
         }
 
+        /* Styling for the submit button */
         form button {
             display: block;
             width: 60px;
@@ -50,30 +58,39 @@
             cursor: pointer;
         }
 
+        /* Hover effect for the button */
         form button:hover {
             background-color: #0056b3;
         }
 
+        /* Styling for error messages */
         .errors {
             color: red;
             margin-bottom: 16px;
         }
     </style>
 </head>
+
 <body>
+    <!-- Link to navigate back to the home page -->
     <p><a href="/">Home</a></p>
+    <!-- Page title -->
     <h1>Add Student</h1>
 
-    <% if (errors.length > 0) { %>
+    <!-- Display error messages if validation fails -->
+    <% if (errors.length> 0) { %>
         <div class="errors">
             <ul>
-                <% errors.forEach(error => { %>
-                    <li><%= error %></li>
+                <% errors.forEach(error=> { %>
+                    <li>
+                        <%= error %>
+                    </li>
                 <% }); %>
             </ul>
         </div>
     <% } %>
 
+    <!-- Form to add a new student -->
     <form action="/students/add" method="POST">
         <label>Student ID</label>
         <input type="text" name="sid" value="<%= student.sid || '' %>">
@@ -81,8 +98,7 @@
         <input type="text" name="name" value="<%= student.name || ''%>">
         <label>Age</label>
         <input type="text" name="age" value="<%= student.age || ''%>">
-        
-        <button type="submit">Add</button>        
+        <button type="submit">Add</button>
     </form>
 </body>
 </html>

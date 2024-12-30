@@ -1,6 +1,7 @@
 var pmysql = require('promise-mysql')
 var pool
 
+// Create a connection pool to the MySQL database with a limit of 3 connections
 pmysql.createPool({
     connectionLimit: 3,
     host: 'localhost',
@@ -15,61 +16,66 @@ pmysql.createPool({
         console.log("pool error:" + e)
     })
 
-    var getStudents = function () {
-        return new Promise((resolve, reject) => {
-            pool.query('SELECT * FROM student')
-                .then((data) => {
-                    resolve(data)
-                })
-                .catch((error) => {
-                    reject(error)
-                })
-        })
-    }
+// Retrieves all students from the student table
+var getStudents = function () {
+    return new Promise((resolve, reject) => {
+        pool.query('SELECT * FROM student')
+            .then((data) => {
+                resolve(data)
+            })
+            .catch((error) => {
+                reject(error)
+            })
+    })
+}
 
-    var getStudentById = function (sid) {
-        return new Promise((resolve, reject) => {
-            const query = 'SELECT * FROM student WHERE sid = ?';
-            pool.query(query, [sid])
-                .then((results) => {
-                    resolve(results[0]); // Return the first (and only) result
-                })
-                .catch((error) => {
-                    reject(error);
-                });
-        });
-    };
-    
-    var updateStudent = function (sid, name, age) {
-        return new Promise((resolve, reject) => {
-            var myQuery = 'UPDATE student SET name = ?, age = ? WHERE sid = ?';     
-            pool.query(myQuery, [name, age, sid])
-                .then((results) => {
-                    resolve(results)
-                })
-                .catch((error) => {
-                    reject(error)
-                    console.log("Error")
-                })
-        })
-    }
+// Retrieves a student by their unique student ID (sid)
+var getStudentById = function (sid) {
+    return new Promise((resolve, reject) => {
+        const query = 'SELECT * FROM student WHERE sid = ?';
+        pool.query(query, [sid])
+            .then((results) => {
+                resolve(results[0]); // Return the first (and only) result
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+};
 
-    var addStudent = function (sid, name, age) {
-        return new Promise((resolve, reject) => {
-            const query = 'INSERT INTO student (sid, name, age) VALUES (?, ?, ?)';
-            pool.query(query, [sid, name, age])
-                .then((results) => {
-                    resolve(results);
-                })
-                .catch((error) => {
-                    reject(error);
-                });
-        });
-    };
+// Updates a student's name and age in the database using their student ID (sid)
+var updateStudent = function (sid, name, age) {
+    return new Promise((resolve, reject) => {
+        var myQuery = 'UPDATE student SET name = ?, age = ? WHERE sid = ?';
+        pool.query(myQuery, [name, age, sid])
+            .then((results) => {
+                resolve(results)
+            })
+            .catch((error) => {
+                reject(error)
+                console.log("Error")
+            })
+    })
+}
 
-    var getGrades = function () {
-        return new Promise((resolve, reject) => {
-            const query = `
+// Adds a new student to the database
+var addStudent = function (sid, name, age) {
+    return new Promise((resolve, reject) => {
+        const query = 'INSERT INTO student (sid, name, age) VALUES (?, ?, ?)';
+        pool.query(query, [sid, name, age])
+            .then((results) => {
+                resolve(results);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+};
+
+// Retrieves all grades, including student name, module name, and grade
+var getGrades = function () {
+    return new Promise((resolve, reject) => {
+        const query = `
                 SELECT s.name AS student_name, 
                        m.name AS module_name, 
                        g.grade 
@@ -77,42 +83,44 @@ pmysql.createPool({
                 LEFT JOIN grade g ON s.sid = g.sid
                 LEFT JOIN module m ON g.mid = m.mid
                 ORDER BY s.name, g.grade ASC;`;
-            pool.query(query)
-                .then((results) => {
-                    resolve(results);
-                })
-                .catch((error) => {
-                    reject(error);
-                });
-        });
-    };
-    
-    const deleteStudent = (sid) => {
-        return new Promise((resolve, reject) => {
-            const query = 'DELETE FROM student WHERE sid = ?';
-            pool.query(query, [sid])
-                .then((result) => resolve(result))
-                .catch((error) => reject(error));
-        });
-    };
+        pool.query(query)
+            .then((results) => {
+                resolve(results);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+};
 
-    const deleteGradesByStudentId = (sid) => {
-        return new Promise((resolve, reject) => {
-            const query = 'DELETE FROM grade WHERE sid = ?';
-            pool.query(query, [sid])
-                .then((result) => resolve(result))
-                .catch((error) => reject(error));
-        });
-    };
-    
-    const deleteGradesByModuleId = (mid) => {
-        return new Promise((resolve, reject) => {
-            const query = 'DELETE FROM grade WHERE mid = ?';
-            pool.query(query, [mid])
-                .then((result) => resolve(result))
-                .catch((error) => reject(error));
-        });
-    };
-    
-    module.exports = { getStudents, getStudentById, updateStudent, getGrades, addStudent, deleteStudent, deleteGradesByStudentId, deleteGradesByModuleId, };
-    
+// Deletes a student by their unique student ID (sid)
+const deleteStudent = (sid) => {
+    return new Promise((resolve, reject) => {
+        const query = 'DELETE FROM student WHERE sid = ?';
+        pool.query(query, [sid])
+            .then((result) => resolve(result))
+            .catch((error) => reject(error));
+    });
+};
+
+// Deletes all grades associated with a specific student ID (sid)
+const deleteGradesByStudentId = (sid) => {
+    return new Promise((resolve, reject) => {
+        const query = 'DELETE FROM grade WHERE sid = ?';
+        pool.query(query, [sid])
+            .then((result) => resolve(result))
+            .catch((error) => reject(error));
+    });
+};
+
+// Deletes all grades associated with a specific module ID (mid)
+const deleteGradesByModuleId = (mid) => {
+    return new Promise((resolve, reject) => {
+        const query = 'DELETE FROM grade WHERE mid = ?';
+        pool.query(query, [mid])
+            .then((result) => resolve(result))
+            .catch((error) => reject(error));
+    });
+};
+
+module.exports = { getStudents, getStudentById, updateStudent, getGrades, addStudent, deleteStudent, deleteGradesByStudentId, deleteGradesByModuleId, };

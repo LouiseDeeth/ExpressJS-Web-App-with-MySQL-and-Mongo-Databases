@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Page title -->
     <title>Update Student</title>
     <style>
         body {
@@ -30,9 +32,9 @@
 
         form input[type="text"],
         form input[type="number"] {
-            width: 100%; 
+            width: 100%;
             padding: 8px;
-            margin-bottom: 16px; 
+            margin-bottom: 16px;
             border: 1px solid #ccc;
             border-radius: 4px;
             box-sizing: border-box;
@@ -60,26 +62,34 @@
         }
     </style>
 </head>
+
 <body>
+    <!-- Link to the home page -->
     <p><a href="/">Home</a></p>
+    <!-- Page heading -->
     <h1>Update Student</h1>
 
-    <% if (errors.length > 0) { %>
+    <!-- Display validation errors, if any -->
+    <% if (errors.length> 0) { %>
         <ul>
-            <% errors.forEach(error => { %>
-                <li><%= error %></li>
-            <% }); %>
+            <% errors.forEach(error=> { %>
+                <li>
+                    <%= error %>
+                </li>
+                <% }); %>
         </ul>
-    <% } %>
+        <% } %>
 
-    <form action="/students/edit/<%= student.sid %>" method="POST">
-        <label>Student ID</label>
-        <input type="text" value="<%= student.sid %>" readonly>
-        <label>Name</label>
-        <input type="text" name="name" value="<%= student.name %>">
-        <label>Age</label>
-        <input type="text" name="age" value="<%= student.age %>">
-        <button type="submit">Add</button>
-    </form>
+            <!-- Form for updating student details -->
+            <form action="/students/edit/<%= student.sid %>" method="POST">
+                <label>Student ID</label>
+                <input type="text" value="<%= student.sid %>" readonly> <!-- readonly: Student ID is not editable -->
+                <label>Name</label>
+                <input type="text" name="name" value="<%= student.name %>">
+                <label>Age</label>
+                <input type="text" name="age" value="<%= student.age %>">
+                <button type="submit">Add</button>
+            </form>
 </body>
+
 </html>
