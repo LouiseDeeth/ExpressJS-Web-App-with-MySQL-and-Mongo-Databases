@@ -1,15 +1,60 @@
-<!--<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lecturers</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        th:nth-child(1),
+        td:nth-child(1) {
+            width: 90px;
+        }
+
+        th:nth-child(2),
+        td:nth-child(2) {
+            width: 150px;
+        }
+
+        th:nth-child(3),
+        td:nth-child(3) {
+            width: 120px;
+            text-align: center;
+        }
+
+        th:nth-child(4),
+        td:nth-child(4) {
+            width: 60px;
+            text-align: center;
+        }
+    </style>
 </head>
+
 <body>
     <h1>Lecturers</h1>
-
     <p><a href="/">Home</a></p>
-    <table border="1" cellpadding="5" cellspacing="0">
+    <p><a href="/lecturers/add">Add Lecturer</a></p>
+    <table>
         <thead>
             <tr>
                 <th>Lecturer ID</th>
@@ -19,17 +64,16 @@
             </tr>
         </thead>
         <tbody>
-            <% lecturers.forEach(lecturer => { %>
+            <% lecturers.forEach(lecturer=> { %>
                 <tr>
-                    <td><%= lecturer.sid %></td>
+                    <td><%= lecturer.lecturerId %></td>
                     <td><%= lecturer.name %></td>
-                    <td><%= lecturer.age %></td>
-                    <td><a href="/students/delete/<%= student.student_id %>">Delete</a></td>
-
-                    <td><a href="/lecturer/delete/<%= lecturer.lid %>">Delete</a></td>
+                    <td><%= lecturer.departmentId %></td>
+                    <td><a href="/lecturers/delete/<%= lecturer.lecturerId %>">Delete</a></td>
                 </tr>
-                <% }) %>
+            <% }) %>
         </tbody>
     </table>
 </body>
-</html>-->
+
+</html>
