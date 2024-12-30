@@ -46,6 +46,21 @@ app.get('/students/edit/:sid', (req, res) => {
         });
 });
 
+app.get('/students/delete/:sid', (req, res) => {
+    const sid = req.params.sid;
+
+    mySqlDao.deleteGradesByStudentId(sid)
+        .then(() => {
+            return mySqlDao.deleteStudent(sid);
+        })
+        .then(() => {
+            res.redirect('/students'); // Redirect to the students page after deletion
+        })
+        .catch((error) => {
+            res.send(`Error deleting student: ${error.message}`);
+        });
+});
+
 app.get('/grades', (req, res) => {
     mySqlDao.getGrades()
         .then((data) => {
@@ -63,7 +78,47 @@ app.get('/grades', (req, res) => {
 });
 
 app.get('/lecturers', (req, res) => {
-    res.send('Lecturers Page');
+    mongoDao.getAllLecturers()
+        .then((data) => {
+            data.sort((a, b) => a.lecturerId.localeCompare(b.lecturerId)); // Sort alphabetically by Lecturer ID
+            res.render('lecturers', { lecturers: data });
+        })
+        .catch((error) => {
+            res.send('Error retrieving lecturers: ' + error);
+        });
+});
+
+app.get('/lecturers/delete/:id', (req, res) => {
+    const lecturerId = req.params.id;
+
+    // Check if the lecturer is associated with any modules
+    mongoDao.checkLecturerModules(lecturerId)
+        .then((module) => {
+            if (module) {
+                // If lecturer is associated with modules, return an error message
+                res.render('lecturers', {
+                    lecturers: [],
+                    errorMessage: `Cannot delete lecturer ${lecturerId}. He/She has associated modules.`
+                });
+            } else {
+                // If lmecturer has no associated modules, proceed with deletion
+                mongoDao.deleteLecturerById(lecturerId)
+                    .then(() => {
+                        res.redirect('/lecturers'); // Redirect back to the lecturers page
+                    })
+                    .catch((error) => {
+                        res.send('Error deleting lecturer: ' + error);
+                    });
+            }
+        })
+        .catch((error) => {
+            res.send('Error checking modules for lecturer: ' + error);
+        });
+});
+
+// Render the form to add a lecturer
+app.get('/lecturers/add', (req, res) => {
+    res.render('addLecturer', { errors: [], lecturer: {} });
 });
 
 app.get('/students/add', (req, res) => {
@@ -134,6 +189,50 @@ app.post('/students/add', (req, res) => {
             .catch((error) => {
                 errors.push('Error checking existing student ID');
                 res.render('addStudent', { errors, student: { sid, name, age } });
+            });
+    }
+});
+
+
+app.post('/lecturers/add', (req, res) => {
+    const { lecturerId, name, departmentId } = req.body;
+
+    const errors = [];
+    if (!lecturerId || lecturerId.length !== 4) {
+        errors.push('Lecturer ID should be 4 characters');
+    }
+    if (!name || name.length < 2) {
+        errors.push('Lecturer Name should be at least 2 characters');
+    }
+    if (!departmentId || departmentId.length !== 3) {
+        errors.push('Department ID should be 3 characters');
+    }
+
+    if (errors.length > 0) {
+        res.render('addLecturer', { errors, lecturer: { lecturerId, name, departmentId } });
+    } else {
+        // Check if the lecturer already exists
+        mongoDao.getAllLecturers()
+            .then((lecturers) => {
+                const existingLecturer = lecturers.find(lecturer => lecturer.lecturerId === lecturerId);
+                if (existingLecturer) {
+                    errors.push(`Lecturer ID ${lecturerId} already exists`);
+                    res.render('addLecturer', { errors, lecturer: { lecturerId, name, departmentId } });
+                } else {
+                    // Add the lecturer to MongoDB
+                    mongoDao.addLecturer(lecturerId, name, departmentId)
+                        .then(() => {
+                            res.redirect('/lecturers'); // Redirect to the lecturers list
+                        })
+                        .catch((error) => {
+                            errors.push('Error adding lecturer to the database');
+                            res.render('addLecturer', { errors, lecturer: { lecturerId, name, departmentId } });
+                        });
+                }
+            })
+            .catch((error) => {
+                errors.push('Error checking existing lecturer ID');
+                res.render('addLecturer', { errors, lecturer: { lecturerId, name, departmentId } });
             });
     }
 });
