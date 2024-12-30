@@ -65,26 +65,35 @@
     <p><a href="/lecturers/add">Add Lecturer</a></p>
 
     <!-- Table displaying lecturers -->
-    <table>
-        <thead>
-            <tr>
-                <th>Lecturer ID</th>
-                <th>Name</th>
-                <th>Department ID</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% lecturers.forEach(lecturer=> { %>
+    <% if (errorMessage) { %>
+        <div style="color: red;"><%= errorMessage %></div>
+    <% } %>
+    
+    <% if (lecturers.length === 0) { %>
+        <p>No lecturers found.</p>
+    <% } else { %>
+        <table>
+            <thead>
                 <tr>
-                    <td><%= lecturer.lecturerId %></td>
-                    <td><%= lecturer.name %></td>
-                    <td><%= lecturer.departmentId %></td>
-                    <td><a href="/lecturers/delete/<%= lecturer.lecturerId %>">Delete</a></td>
+                    <th>Lecturer ID</th>
+                    <th>Name</th>
+                    <th>Department ID</th>
+                    <th>Action</th>
                 </tr>
-            <% }) %>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                <% lecturers.forEach((lecturer) => { %>
+                    <tr>
+                        <td><%= lecturer.lecturerId %></td>
+                        <td><%= lecturer.name %></td>
+                        <td><%= lecturer.departmentId %></td>
+                        <td><a href="/lecturers/delete/<%= lecturer.lecturerId %>" onclick="return confirm('Are you sure you want to delete this lecturer?');">Delete</a>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    <% } %>  
 </body>
 
 </html>

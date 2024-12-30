@@ -1,4 +1,5 @@
 const MongoClient = require('mongodb').MongoClient
+const mySqlDao = require('./mySqlDao');
 
 var db
 var collection
@@ -27,12 +28,17 @@ const getAllLecturers = () => {
 
 // Deletes a lecturer from the lecturers collection by lecturerId
 const deleteLecturerById = (lecturerId) => {
-    return db.collection('lecturers').deleteOne({ _id: lecturerId });
-};
-
-// Checks if a lecturer is associated with any modules in the modules collection
-const checkLecturerModules = (lecturerId) => {
-    return db.collection('modules').findOne({ lecturerId: lecturerId });
+    return db.collection('lecturers').deleteOne({ _id: lecturerId })
+        .then((result) => {
+            if (result.deletedCount === 0) {
+                throw new Error(`No lecturer found with ID ${lecturerId}`);
+            }
+            return result;
+        })
+        .catch((error) => {
+            console.error('Error deleting lecturer:', error);
+            throw error;
+        });
 };
 
 // Adds a new lecturer to the lecturers collection
@@ -41,6 +47,24 @@ const addLecturer = (lecturerId, name, departmentId) => {
         _id: lecturerId,
         name: name,
         did: departmentId
+    });
+};
+
+// Checks if a lecturer is associated with any modules in the modules collection
+const checkLecturerModules = (lecturerId) => {
+    return new Promise((resolve, reject) => {
+        // Query MySQL to check for modules associated with the lecturerId
+        mySqlDao.getModulesByLecturerId(lecturerId)
+            .then((modules) => {
+                if (modules.length > 0) {
+                    resolve(true); // Modules exist for the lecturer
+                } else {
+                    resolve(false); 
+                }
+            })
+            .catch((error) => {
+                reject(error); 
+            });
     });
 };
 

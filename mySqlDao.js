@@ -123,4 +123,14 @@ const deleteGradesByModuleId = (mid) => {
     });
 };
 
-module.exports = { getStudents, getStudentById, updateStudent, getGrades, addStudent, deleteStudent, deleteGradesByStudentId, deleteGradesByModuleId, };
+// Retrieve modules by lecturerId
+const checkLecturerModules  = (lecturerId) => {
+    return new Promise((resolve, reject) => {
+        const query = 'SELECT * FROM module WHERE lecturer = ?';
+        pool.query(query, [lecturerId])
+            .then((results) => resolve(results))
+            .catch((error) => reject(error));
+    });
+};
+
+module.exports = { getStudents, getStudentById, updateStudent, getGrades, addStudent, deleteStudent, deleteGradesByStudentId, deleteGradesByModuleId, checkLecturerModules, };

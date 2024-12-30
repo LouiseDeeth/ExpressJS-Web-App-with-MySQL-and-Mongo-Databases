@@ -88,10 +88,10 @@ app.get('/lecturers', (req, res) => {
     mongoDao.getAllLecturers()
         .then((data) => {
             data.sort((a, b) => a.lecturerId.localeCompare(b.lecturerId)); // Sort alphabetically by Lecturer ID
-            res.render('lecturers', { lecturers: data });
+            res.render('lecturers', { lecturers: data, errorMessage: null }); // Define errorMessage as null if no errors
         })
         .catch((error) => {
-            res.send('Error retrieving lecturers: ' + error);
+            res.render('lecturers', { lecturers: [], errorMessage: `Error retrieving lecturers: ${error.message}` });
         });
 });
 
@@ -99,28 +99,51 @@ app.get('/lecturers', (req, res) => {
 app.get('/lecturers/delete/:id', (req, res) => {
     const lecturerId = req.params.id;
 
-    // Check if the lecturer is associated with any modules
-    mongoDao.checkLecturerModules(lecturerId)
-        .then((module) => {
-            if (module) {
-                // If lecturer is associated with modules, return an error message
-                res.render('lecturers', {
-                    lecturers: [],
-                    errorMessage: `Cannot delete lecturer ${lecturerId}. He/She has associated modules.`
-                });
-            } else {
-                // If lecturer has no associated modules, proceed with deletion
-                mongoDao.deleteLecturerById(lecturerId)
-                    .then(() => {
-                        res.redirect('/lecturers'); // Redirect back to the lecturers page
+    mySqlDao.checkLecturerModules(lecturerId)
+        .then((hasModules) => {
+            if (hasModules) {
+                // Fetch all lecturers and display an error message
+                mongoDao.getAllLecturers()
+                    .then((lecturers) => {
+                        res.render('lecturers', {
+                            lecturers,
+                            errorMessage: `Cannot delete lecturer ${lecturerId}. He/She has associated modules.`,
+                        });
                     })
                     .catch((error) => {
-                        res.send('Error deleting lecturer: ' + error);
+                        res.render('lecturers', {
+                            lecturers: [],
+                            errorMessage: `Error retrieving lecturers: ${error.message}`,
+                        });
+                    });
+            } else {
+                // Proceed to delete the lecturer
+                mongoDao.deleteLecturerById(lecturerId)
+                    .then(() => {
+                        mongoDao.getAllLecturers()
+                            .then((lecturers) => {
+                                res.render('lecturers', { lecturers, errorMessage: null });
+                            })
+                            .catch((error) => {
+                                res.render('lecturers', {
+                                    lecturers: [],
+                                    errorMessage: `Error retrieving lecturers: ${error.message}`,
+                                });
+                            });
+                    })
+                    .catch((error) => {
+                        res.render('lecturers', {
+                            lecturers: [],
+                            errorMessage: `Error deleting lecturer: ${error.message}`,
+                        });
                     });
             }
         })
         .catch((error) => {
-            res.send('Error checking modules for lecturer: ' + error);
+            res.render('lecturers', {
+                lecturers: [],
+                errorMessage: `Error checking modules for lecturer: ${error.message}`,
+            });
         });
 });
 
