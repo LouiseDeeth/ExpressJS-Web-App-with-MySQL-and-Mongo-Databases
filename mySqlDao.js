@@ -87,4 +87,32 @@ pmysql.createPool({
         });
     };
     
-    module.exports = { getStudents, getStudentById, updateStudent, addStudent, getGrades };
+    const deleteStudent = (sid) => {
+        return new Promise((resolve, reject) => {
+            const query = 'DELETE FROM student WHERE sid = ?';
+            pool.query(query, [sid])
+                .then((result) => resolve(result))
+                .catch((error) => reject(error));
+        });
+    };
+
+    const deleteGradesByStudentId = (sid) => {
+        return new Promise((resolve, reject) => {
+            const query = 'DELETE FROM grade WHERE sid = ?';
+            pool.query(query, [sid])
+                .then((result) => resolve(result))
+                .catch((error) => reject(error));
+        });
+    };
+    
+    const deleteGradesByModuleId = (mid) => {
+        return new Promise((resolve, reject) => {
+            const query = 'DELETE FROM grade WHERE mid = ?';
+            pool.query(query, [mid])
+                .then((result) => resolve(result))
+                .catch((error) => reject(error));
+        });
+    };
+    
+    module.exports = { getStudents, getStudentById, updateStudent, getGrades, addStudent, deleteStudent, deleteGradesByStudentId, deleteGradesByModuleId, };
+    
