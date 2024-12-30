@@ -26,16 +26,26 @@ pmysql.createPool({
                 })
         })
     }
-    
-    var deleteStudent = function (sid) {
+
+    var getStudentById = function (sid) {
         return new Promise((resolve, reject) => {
-            var myQuery = {
-                sql: 'DELETE FROM student where sid = ?',
-                values: [sid]
-            }     
-            pool.query(myQuery)
-                .then((data) => {
-                    resolve(data)
+            const query = 'SELECT * FROM student WHERE sid = ?';
+            pool.query(query, [sid])
+                .then((results) => {
+                    resolve(results[0]); // Return the first (and only) result
+                })
+                .catch((error) => {
+                    reject(error);
+                });
+        });
+    };
+    
+    var updateStudent = function (sid, name, age) {
+        return new Promise((resolve, reject) => {
+            var myQuery = 'UPDATE student SET name = ?, age = ? WHERE sid = ?';     
+            pool.query(myQuery, [name, age, sid])
+                .then((results) => {
+                    resolve(results)
                 })
                 .catch((error) => {
                     reject(error)
@@ -43,4 +53,4 @@ pmysql.createPool({
                 })
         })
     }
-    module.exports = { getStudents, deleteStudent }
+    module.exports = { getStudents, getStudentById, updateStudent };
