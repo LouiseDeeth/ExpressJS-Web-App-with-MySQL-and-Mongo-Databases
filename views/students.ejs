@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,39 +9,67 @@
         table {
             border-collapse: collapse;
         }
+        
+        th,
         td {
+            border: 1px solid #ddd;
             text-align: left;
             padding: 8px;
         }
+
+        td {
+            text-align: left;
+        }
+
         th {
             background-color: #f2f2f2;
             text-align: center;
-            padding: 8px;
         }
+
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
-        th:nth-child(1), td:nth-child(1) {
-            width: 80px; 
+
+        th:nth-child(1),
+        td:nth-child(1) {
+            width: 80px;
         }
-        th:nth-child(2), td:nth-child(2) {
+
+        th:nth-child(2),
+        td:nth-child(2) {
             width: 130px;
         }
-        th:nth-child(3), td:nth-child(3) {
-            width: 30px; 
+
+        th:nth-child(3),
+        td:nth-child(3) {
+            width: 30px;
             text-align: center;
         }
-        th:nth-child(4), td:nth-child(4) {
-            width: 60px; 
+
+        th:nth-child(4),
+        td:nth-child(4) {
+            width: 60px;
             text-align: center;
         }
+        .delete-button {
+        color: white;
+        background-color: darkred;
+        padding: 5px 10px;
+        text-decoration: none;
+        border-radius: 3px;
+    }
+
+    .delete-button:hover {
+        background-color: red;
+    }
     </style>
 </head>
+
 <body>
     <h1>Students</h1>
-    <p><a href="/students/add">Add Student</a></p>
     <p><a href="/">Home</a></p>
-    <table border="1" cellpadding="5" cellspacing="0">
+    <p><a href="/students/add">Add Student</a></p>
+    <table>
         <thead>
             <tr>
                 <th>Student ID</th>
@@ -50,15 +79,17 @@
             </tr>
         </thead>
         <tbody>
-            <% students.forEach(student => { %>
+            <% students.forEach(student=> { %>
                 <tr>
                     <td><%= student.sid %></td>
                     <td><%= student.name %></td>
                     <td><%= student.age %></td>
                     <td><a href="/students/edit/<%= student.sid %>">Update</a></td>
+                    <td><a class="delete-button" href="/students/delete/<%= student.sid %>" onclick="return confirm('Are you sure you want to delete this student?');">Delete</a></td>
                 </tr>
             <% }) %>
         </tbody>
     </table>
 </body>
+
 </html>
