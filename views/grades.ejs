@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grades</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        th:nth-child(1), td:nth-child(1) {
+            width: 150px; 
+        }
+        th:nth-child(2), td:nth-child(2) {
+            width: 250px;
+        }
+        th:nth-child(3), td:nth-child(3) {
+            width: 30px; 
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+    <p><a href="/">Home</a></p>
+    <h1>Grades</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Student</th>
+                <th>Module</th>
+                <th>Grade</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% grades.forEach(grade => { %>
+                <tr>
+                    <td><%= grade.student_name %></td>
+                    <td><%= grade.module_name || '' %></td>
+                    <td><%= grade.grade !== null ? grade.grade : '' %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</body>
+</html>

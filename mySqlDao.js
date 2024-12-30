@@ -67,4 +67,24 @@ pmysql.createPool({
         });
     };
 
-    module.exports = { getStudents, getStudentById, updateStudent, addStudent };
+    var getGrades = function () {
+        return new Promise((resolve, reject) => {
+            const query = `
+                SELECT s.name AS student_name, 
+                       m.name AS module_name, 
+                       g.grade 
+                FROM student s
+                LEFT JOIN grade g ON s.sid = g.sid
+                LEFT JOIN module m ON g.mid = m.mid
+                ORDER BY s.name, g.grade ASC;`;
+            pool.query(query)
+                .then((results) => {
+                    resolve(results);
+                })
+                .catch((error) => {
+                    reject(error);
+                });
+        });
+    };
+    
+    module.exports = { getStudents, getStudentById, updateStudent, addStudent, getGrades };

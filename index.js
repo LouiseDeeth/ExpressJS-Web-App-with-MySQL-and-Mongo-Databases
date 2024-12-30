@@ -15,7 +15,7 @@ app.listen(3004, () => { // Web app must run on 3004
 
 // Render the home page
 app.get('/', (req, res) => {
-    res.render('index'); 
+    res.render('index');
 });
 
 // Display the list of students
@@ -23,7 +23,7 @@ app.get('/students', (req, res) => {
     mySqlDao.getStudents()
         .then((data) => {
             console.log(JSON.stringify(data))
-            res.render("students", {"students": data})
+            res.render("students", { "students": data })
         })
         .catch((error) => {
             res.send(error)
@@ -47,7 +47,19 @@ app.get('/students/edit/:sid', (req, res) => {
 });
 
 app.get('/grades', (req, res) => {
-    res.send('Grades Page');
+    mySqlDao.getGrades()
+        .then((data) => {
+            // Sort the data alphabetically by student name, then by grade (ascending)
+            data.sort((a, b) => {
+                if (a.student_name < b.student_name) return -1;
+                if (a.student_name > b.student_name) return 1;
+                return a.grade - b.grade;
+            });
+            res.render('grades', { grades: data });
+        })
+        .catch((error) => {
+            res.send('Error retrieving grades: ' + error);
+        });
 });
 
 app.get('/lecturers', (req, res) => {
@@ -55,7 +67,7 @@ app.get('/lecturers', (req, res) => {
 });
 
 app.get('/students/add', (req, res) => {
-    res.render('addStudent', {errors: [], student: {} });
+    res.render('addStudent', { errors: [], student: {} });
 });
 
 app.post('/students/edit/:sid', (req, res) => {
