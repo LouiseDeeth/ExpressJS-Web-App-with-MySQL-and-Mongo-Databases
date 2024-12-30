@@ -4,13 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Student</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            text-align: left;
+        }
+
+        form {
+            max-width: 400px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        form input[type="text"],
+        form input[type="number"] {
+            width: 100%; 
+            padding: 8px;
+            margin-bottom: 16px; 
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        form button {
+            display: block;
+            width: 60px;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #0056b3;
+        }
+
+        .errors {
+            color: red;
+            margin-bottom: 16px;
+        }
+    </style>
 </head>
 <body>
     <p><a href="/">Home</a></p>
     <h1>Update Student</h1>
 
     <% if (errors.length > 0) { %>
-        <ul style="color: red;">
+        <ul>
             <% errors.forEach(error => { %>
                 <li><%= error %></li>
             <% }); %>
@@ -18,13 +73,12 @@
     <% } %>
 
     <form action="/students/edit/<%= student.sid %>" method="POST">
-        <label>Student ID:</label>
-        <input type="text" value="<%= student.sid %>" readonly><br>
+        <label>Student ID</label>
+        <input type="text" value="<%= student.sid %>" readonly>
         <label>Name</label>
-        <input type="text" name="name" value="<%= student.name %>"><br>
+        <input type="text" name="name" value="<%= student.name %>">
         <label>Age</label>
-        <input type="text" name="age" value="<%= student.age %>"><br>
-        
+        <input type="text" name="age" value="<%= student.age %>">
         <button type="submit">Add</button>
     </form>
 </body>

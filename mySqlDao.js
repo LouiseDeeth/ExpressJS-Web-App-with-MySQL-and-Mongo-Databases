@@ -53,4 +53,18 @@ pmysql.createPool({
                 })
         })
     }
-    module.exports = { getStudents, getStudentById, updateStudent };
+
+    var addStudent = function (sid, name, age) {
+        return new Promise((resolve, reject) => {
+            const query = 'INSERT INTO student (sid, name, age) VALUES (?, ?, ?)';
+            pool.query(query, [sid, name, age])
+                .then((results) => {
+                    resolve(results);
+                })
+                .catch((error) => {
+                    reject(error);
+                });
+        });
+    };
+
+    module.exports = { getStudents, getStudentById, updateStudent, addStudent };

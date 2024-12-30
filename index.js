@@ -54,8 +54,8 @@ app.get('/lecturers', (req, res) => {
     res.send('Lecturers Page');
 });
 
-app.get('/addStudent', (req, res) => {
-    res.send('Add Student Page');
+app.get('/students/add', (req, res) => {
+    res.render('addStudent', {errors: [], student: {} });
 });
 
 app.post('/students/edit/:sid', (req, res) => {
@@ -81,6 +81,47 @@ app.post('/students/edit/:sid', (req, res) => {
             })
             .catch((error) => {
                 res.send(error);
+            });
+    }
+});
+
+app.post('/students/add', (req, res) => {
+    const { sid, name, age } = req.body;
+
+    const errors = [];
+    if (!sid || sid.length !== 4) {
+        errors.push('Student ID should be 4 characters');
+    }
+    if (!name || name.length < 2) {
+        errors.push('Student Name should be at least 2 characters');
+    }
+    if (!age || isNaN(age) || age < 18) {
+        errors.push('Student Age should be at least 18');
+    }
+
+    if (errors.length > 0) {
+        res.render('addStudent', { errors, student: { sid, name, age } });
+    } else {
+        mySqlDao.getStudentById(sid)
+            .then((existingStudent) => {
+                if (existingStudent) {
+                    errors.push(`Student ID ${sid} already exists`);
+                    res.render('addStudent', { errors, student: { sid, name, age } });
+                } else {
+                    // Add the student to the database
+                    mySqlDao.addStudent(sid, name, age)
+                        .then(() => {
+                            res.redirect('/students'); // Redirect to the students list
+                        })
+                        .catch((error) => {
+                            errors.push('Error adding student to the database');
+                            res.render('addStudent', { errors, student: { sid, name, age } });
+                        });
+                }
+            })
+            .catch((error) => {
+                errors.push('Error checking existing student ID');
+                res.render('addStudent', { errors, student: { sid, name, age } });
             });
     }
 });
